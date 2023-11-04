@@ -22,6 +22,7 @@ const Button = ({
 }: Props) => {
   return (
     <button
+      onClick={onClick}
       disabled={disabled}
       className={`rounded-md
       hover:opacity-80

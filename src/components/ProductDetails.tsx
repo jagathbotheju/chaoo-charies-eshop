@@ -1,16 +1,23 @@
 "use client";
 import { Rating } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SetColor from "./SetColor";
 import SetQuantity from "./SetQuantity";
 import Button from "./Button";
 import ProductImage from "./ProductImage";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { MdCheckCircle } from "react-icons/md";
 
 interface Props {
   product: any;
 }
 
 const ProductDetails = ({ product }: Props) => {
+  const router = useRouter();
+  const { cartTotalQty, cartProducts, addProductToCart } = useCart();
+  const [productInCart, setProductInCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProduct>({
     id: product.id,
     name: product.description,
@@ -24,6 +31,11 @@ const ProductDetails = ({ product }: Props) => {
   const productRating =
     product.reviews.reduce((acc: number, item: any) => acc + item.rating, 0) /
     product.reviews.length;
+
+  useEffect(() => {
+    const exist = cartProducts.find((product) => product.id === cartProduct.id);
+    setProductInCart(true);
+  }, [cartProduct.id, cartProducts]);
 
   const handleColorSelect = (value: SelectedImg) => {
     setCartProduct((prev) => {
@@ -44,6 +56,19 @@ const ProductDetails = ({ product }: Props) => {
       return { ...prev, quantity: prev.quantity++ };
     });
   };
+
+  const handleAddProductToCart = () => {
+    const exist = cartProducts.find((product) => product.id === cartProduct.id);
+    if (exist) {
+      //toast.error("Product Already Exist in your Cart");
+      setProductInCart(true);
+    } else {
+      addProductToCart(cartProduct);
+      //router.push("/");
+    }
+  };
+
+  console.log("cartProducts", cartProducts);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -82,22 +107,42 @@ const ProductDetails = ({ product }: Props) => {
         </div>
         <hr className="w-[30%] my-2" />
 
-        <SetColor
-          cartProduct={cartProduct}
-          images={product.images}
-          handleColorSelect={handleColorSelect}
-        />
-        <hr className="w-[30%] my-2" />
+        {productInCart ? (
+          <>
+            <p className="mb-2 text-slate-500 flex items-center gap-1">
+              <MdCheckCircle size={20} className="text-teal-400" />
+              <span>Product added to Cart</span>
+            </p>
+            <Button
+              label="View Cart"
+              onClick={() => router.push("/cart")}
+              outline
+            />
+          </>
+        ) : (
+          <>
+            <SetColor
+              cartProduct={cartProduct}
+              images={product.images}
+              handleColorSelect={handleColorSelect}
+            />
+            <hr className="w-[30%] my-2" />
 
-        <SetQuantity
-          cartProduct={cartProduct}
-          handleQtyDecrease={handleQtyDecrease}
-          handleQtyIncrease={handleQtyIncrease}
-        />
-        <hr className="w-[30%] my-2" />
+            <SetQuantity
+              cartProduct={cartProduct}
+              handleQtyDecrease={handleQtyDecrease}
+              handleQtyIncrease={handleQtyIncrease}
+            />
+            <hr className="w-[30%] my-2" />
 
-        <Button small label="Add to Cart" onClick={() => {}} />
-        <hr className="w-[30%] my-2" />
+            <Button
+              small
+              label="Add to Cart"
+              onClick={handleAddProductToCart}
+            />
+            <hr className="w-[30%] my-2" />
+          </>
+        )}
       </div>
     </div>
   );
