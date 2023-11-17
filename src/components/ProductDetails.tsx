@@ -20,7 +20,7 @@ const ProductDetails = ({ product }: Props) => {
   const [productInCart, setProductInCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProduct>({
     id: product.id,
-    name: product.description,
+    name: product.name,
     description: product.description,
     category: product.category,
     brand: product.brand,
@@ -34,7 +34,9 @@ const ProductDetails = ({ product }: Props) => {
 
   useEffect(() => {
     const exist = cartProducts.find((product) => product.id === cartProduct.id);
-    setProductInCart(true);
+    if (exist) {
+      setProductInCart(true);
+    }
   }, [cartProduct.id, cartProducts]);
 
   const handleColorSelect = (value: SelectedImg) => {
@@ -51,7 +53,10 @@ const ProductDetails = ({ product }: Props) => {
   };
 
   const handleQtyIncrease = () => {
-    if (cartProduct.quantity === 99) return;
+    if (cartProduct.quantity === 99) {
+      toast.error("Maximum limit reached");
+      return;
+    }
     setCartProduct((prev) => {
       return { ...prev, quantity: prev.quantity++ };
     });
@@ -67,8 +72,6 @@ const ProductDetails = ({ product }: Props) => {
       //router.push("/");
     }
   };
-
-  console.log("cartProducts", cartProducts);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">

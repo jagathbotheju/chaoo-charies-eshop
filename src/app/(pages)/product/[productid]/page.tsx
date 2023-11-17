@@ -1,7 +1,8 @@
 import Container from "@/components/Container";
 import ListRating from "@/components/ListRating";
 import ProductDetails from "@/components/ProductDetails";
-import { product } from "@/utils/product";
+import { products } from "@/utils/products";
+//import { product } from "@/utils/product";
 
 interface Props {
   params: {
@@ -10,7 +11,8 @@ interface Props {
 }
 
 const ProductDetailsPage = ({ params }: Props) => {
-  console.log("params", params.productid);
+  const product = products.find((product) => product.id === params.productid);
+
   return (
     <div className="p-8">
       <Container>

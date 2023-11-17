@@ -8,7 +8,9 @@ interface Props {
   small?: boolean;
   custom?: string;
   icon?: IconType;
+  width?: "w-full" | "w-fit";
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  loader?: React.ReactNode;
 }
 
 const Button = ({
@@ -19,6 +21,8 @@ const Button = ({
   custom,
   icon: Icon,
   onClick,
+  loader,
+  width = "w-fit",
 }: Props) => {
   return (
     <button
@@ -27,11 +31,12 @@ const Button = ({
       className={`rounded-md
       hover:opacity-80
       transition
-      w-fit
+      ${width}
       border-slate-700
       items-center
       justify-center
       gap-2
+      flex
       ${outline ? "bg-white" : "bg-slate-700"}
       ${outline ? "text-slate-700" : "text-white"}
       ${small ? "text-sm font-light" : "text-md font-semibold"}
@@ -40,6 +45,7 @@ const Button = ({
     `}
     >
       {Icon && <Icon size={24} />}
+      {loader}
       {label}
     </button>
   );

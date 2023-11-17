@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
+import Hydration from "@/components/Hydration";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -23,9 +24,11 @@ export default function RootLayout({
         className={`${poppins.className} min-h-screen flex flex-col text-slate-700`}
       >
         <Providers>
-          <Navbar />
-          <main className="grow">{children}</main>
-          <Footer />
+          <Hydration>
+            <Navbar />
+            <main className="grow">{children}</main>
+            <Footer />
+          </Hydration>
         </Providers>
       </body>
     </html>
