@@ -37,6 +37,8 @@ const Button = ({
       justify-center
       gap-2
       flex
+      ${disabled && "opacity-80"}
+      ${disabled && "cursor-wait"}
       ${outline ? "bg-white" : "bg-slate-700"}
       ${outline ? "text-slate-700" : "text-white"}
       ${small ? "text-sm font-light" : "text-md font-semibold"}

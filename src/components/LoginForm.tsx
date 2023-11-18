@@ -1,13 +1,19 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Heading from "./Heading";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Input from "./Input";
 import Button from "./Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const LoginForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -23,11 +29,39 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
     console.log(data);
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    }).then((cb) => {
+      setIsLoading(false);
+      if (cb?.ok) {
+        if (cb?.ok) {
+          router.push("/cart");
+          router.refresh();
+          toast.success("Successfully LoggedIn");
+        }
+        if (cb?.error) {
+          toast.error(cb.error);
+        }
+      }
+    });
   };
+
+  useEffect(() => {
+    if (session && session.user) {
+      router.back();
+    }
+  }, [session, router]);
+
+  if (session && session.user) {
+    return (
+      <p className="text-center">You are already logged in, redirecting...</p>
+    );
+  }
 
   return (
     <>
-      <Heading title="Sign in to E-Shop" />
+      <Heading title="Log in to E-Shop" />
       <hr className="bg-slate-300 w-full" />
 
       {/* email */}
@@ -53,7 +87,7 @@ const LoginForm = () => {
 
       {/* submit button */}
       <Button
-        label="Sing Up"
+        label="Log In"
         onClick={handleSubmit(onSubmit)}
         width="w-full"
         loader={
@@ -68,7 +102,7 @@ const LoginForm = () => {
       <Button
         outline
         label="Continue with Google"
-        onClick={() => {}}
+        onClick={() => signIn("google")}
         icon={AiOutlineGoogle}
         width="w-full"
       />

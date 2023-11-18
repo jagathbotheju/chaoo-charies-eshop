@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { User } from "@prisma/client";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -44,6 +45,17 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+
+  callbacks: {
+    async session({ session, token, user }) {
+      console.log("token", token as User);
+      session.user = token as User;
+      return session;
+    },
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+  },
   pages: {
     signIn: "/login",
   },

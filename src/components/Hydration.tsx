@@ -12,8 +12,6 @@ const Hydration = ({ children }: Props) => {
     setHydrate(true);
   }, []);
 
-  console.log("hydrating...", hydrate);
-
   return (
     <>
       {hydrate ? (

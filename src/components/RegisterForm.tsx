@@ -1,13 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Heading from "./Heading";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Input from "./Input";
 import Button from "./Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
+import { signupUser } from "@/utils/serverActions";
+import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const RegisterForm = () => {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -21,10 +29,53 @@ const RegisterForm = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = (formData) => {
     setIsLoading(true);
-    console.log(data);
+    startTransition(() => {
+      signupUser(formData)
+        .then((response) => {
+          if (response.success) {
+            console.log("user from serverActions", response.data);
+            toast.success("User create successfully");
+            signIn("credentials", {
+              email: formData.email,
+              password: formData.password,
+              redirect: false,
+            }).then((cb) => {
+              if (cb?.ok) {
+                router.push("/cart");
+                router.refresh();
+                toast.success("Successfully LoggedIn");
+              }
+              if (cb?.error) {
+                toast.error(cb.error);
+              }
+            });
+          } else {
+            toast.error(response.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    });
   };
+
+  useEffect(() => {
+    if (session && session.user) {
+      router.back();
+    }
+  }, [session, router]);
+
+  if (session && session.user) {
+    return (
+      <p className="text-center">You are already logged in, redirecting...</p>
+    );
+  }
 
   return (
     <>
@@ -64,6 +115,7 @@ const RegisterForm = () => {
 
       {/* submit button */}
       <Button
+        disabled={isLoading}
         label="Sing Up"
         onClick={handleSubmit(onSubmit)}
         width="w-full"
@@ -72,16 +124,6 @@ const RegisterForm = () => {
             <span className="loading loading-spinner text-secondary loading-sm"></span>
           )
         }
-      />
-
-      {/* with google */}
-      <div className="divider">OR</div>
-      <Button
-        outline
-        label="Signup with Google"
-        onClick={() => {}}
-        icon={AiOutlineGoogle}
-        width="w-full"
       />
 
       <p className="text-sm">

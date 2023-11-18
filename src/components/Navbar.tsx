@@ -6,6 +6,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { useEffect } from "react";
+import UserMenu from "./UserMenu";
 
 const redressed = Redressed({ subsets: ["latin"], weight: ["400"] });
 
@@ -39,7 +40,7 @@ const Navbar = () => {
                 </p>
                 <AiOutlineShoppingCart size={30} />
               </div>
-              <div>UserMenu</div>
+              <UserMenu />
             </div>
           </div>
         </Container>
