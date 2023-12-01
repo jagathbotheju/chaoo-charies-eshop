@@ -27,15 +27,15 @@ export default async function RootLayout({
       <body
         className={`${poppins.className} min-h-screen flex flex-col text-slate-700`}
       >
-        <SessionProvider session={session}>
-          <Providers>
-            <Hydration>
+        <Hydration>
+          <SessionProvider session={session}>
+            <Providers>
               <Navbar />
               <main className="grow">{children}</main>
               <Footer />
-            </Hydration>
-          </Providers>
-        </SessionProvider>
+            </Providers>
+          </SessionProvider>
+        </Hydration>
       </body>
     </html>
   );

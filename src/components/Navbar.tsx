@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
 import { useEffect } from "react";
 import UserMenu from "./UserMenu";
+import { cartTotalAmount } from "@/utils/cartTotalAmount";
 
 const redressed = Redressed({ subsets: ["latin"], weight: ["400"] });
 
 const Navbar = () => {
-  const { cartTotalQty } = useCart((state) => state);
+  const { cartProducts } = useCart((state) => state);
   const router = useRouter();
 
   // useEffect(() => {
@@ -30,13 +31,13 @@ const Navbar = () => {
               E-Shop
             </Link>
             <div className="hidden md:block">Search</div>
-            <div className="flex items-center gap-8 md:gap-12">
+            <div className="flex items-center gap-5 md:gap-8">
               <div
                 className="relative cursor-pointer"
                 onClick={() => router.push("/cart")}
               >
                 <p className="text-xs font-semibold text-slate-200 absolute -right-1 -top-1 w-3 h-3 rounded-full bg-slate-800 shadow-lg flex items-center justify-center p-2">
-                  {cartTotalQty}
+                  {cartTotalAmount(cartProducts).totalQty}
                 </p>
                 <AiOutlineShoppingCart size={30} />
               </div>

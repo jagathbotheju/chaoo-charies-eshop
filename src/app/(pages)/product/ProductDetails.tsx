@@ -2,9 +2,9 @@
 import { Rating } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import SetColor from "./SetColor";
-import SetQuantity from "./SetQuantity";
-import Button from "./Button";
-import ProductImage from "./ProductImage";
+import SetQuantity from "../cart/SetQuantity";
+import Button from "../../../components/Button";
+import ProductImage from "../../../components/ProductImage";
 import { useCart } from "@/hooks/useCart";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";

@@ -5,6 +5,7 @@ type CartStore = {
   cartTotalQty: number;
   cartTotalAmount: number;
   cartProducts: CartProduct[];
+  paymentIntent: string | null;
   addProductToCart: (product: CartProduct) => void;
   removeProductFromCart: (productId: string) => void;
   handleQtyIncrease: (productId: string) => void;
@@ -12,6 +13,8 @@ type CartStore = {
   clearCart: () => void;
   setCartTotalQty: (totalQty: number) => void;
   setCartTotalAmount: (totalAmount: number) => void;
+  setPaymentIntent: (paymentIntent: string | null) => void;
+  clearPaymentIntent: () => void;
 };
 
 export const useCart = create<CartStore>()(
@@ -20,6 +23,19 @@ export const useCart = create<CartStore>()(
       cartTotalQty: 0,
       cartTotalAmount: 0,
       cartProducts: [],
+      paymentIntent: null,
+
+      setPaymentIntent: (paymentIntent: string | null) => {
+        set((state) => ({
+          paymentIntent,
+        }));
+      },
+
+      clearPaymentIntent: () => {
+        set((state) => ({
+          paymentIntent: null,
+        }));
+      },
 
       setCartTotalAmount: (totalAmount: number) => {
         set((state) => ({

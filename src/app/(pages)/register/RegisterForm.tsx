@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
-import Heading from "./Heading";
+import Heading from "../../../components/Heading";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../../../components/Input";
+import Button from "../../../components/Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
 import { signupUser } from "@/utils/serverActions";

@@ -20,6 +20,7 @@ const UserMenu = () => {
           onClick={() => setOpen(!open)}
         >
           <Avatar src={session?.user?.image} />
+          {session && session.user && <p>{session.user.name?.split(" ")[0]}</p>}
           <AiFillCaretDown />
         </div>
 

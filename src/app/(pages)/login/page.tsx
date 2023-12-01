@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import FormWrap from "@/components/FormWrap";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/app/(pages)/login/LoginForm";
 
 const LoginPage = () => {
   return (

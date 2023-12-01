@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import Heading from "./Heading";
+import Heading from "../../../components/Heading";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import Input from "./Input";
-import Button from "./Button";
+import Input from "../../../components/Input";
+import Button from "../../../components/Button";
 import Link from "next/link";
 import { AiOutlineGoogle } from "react-icons/ai";
 import { signIn } from "next-auth/react";
@@ -28,7 +28,6 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
-    console.log(data);
     signIn("credentials", {
       ...data,
       redirect: false,
@@ -55,7 +54,8 @@ const LoginForm = () => {
 
   if (session && session.user) {
     return (
-      <p className="text-center">You are already logged in, redirecting...</p>
+      // <p className="text-center">You are already logged in, redirecting...</p>
+      <span className="loading loading-ring loading-lg"></span>
     );
   }
 

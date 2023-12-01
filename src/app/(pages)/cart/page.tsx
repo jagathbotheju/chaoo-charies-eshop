@@ -1,4 +1,4 @@
-import CartClient from "@/components/CartClient";
+import CartClient from "@/app/(pages)/cart/CartClient";
 import Container from "@/components/Container";
 
 const CartPage = () => {

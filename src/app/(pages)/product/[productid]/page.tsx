@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import ListRating from "@/components/ListRating";
-import ProductDetails from "@/components/ProductDetails";
+import ProductDetails from "@/app/(pages)/product/ProductDetails";
 import { products } from "@/utils/products";
 //import { product } from "@/utils/product";
 
