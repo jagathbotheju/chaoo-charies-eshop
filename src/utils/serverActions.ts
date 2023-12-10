@@ -1,14 +1,159 @@
 "use server";
-import { User } from "@prisma/client";
+import { User, Product } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { FieldValues } from "react-hook-form";
 import prisma from "./prismadb";
 import Stripe from "stripe";
 import { cartTotalAmount } from "./cartTotalAmount";
+import { revalidatePath } from "next/cache";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
 });
+
+export const updateStock = async (productId: string, inStock: boolean) => {
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: {
+        inStock: !inStock,
+      },
+    });
+    if (!updatedProduct) {
+      return {
+        success: false,
+        message: "Internal Server Error",
+      };
+    }
+
+    return {
+      success: true,
+      data: updatedProduct,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Internal Server Error",
+    };
+  }
+};
+
+export const getOrders = async () => {
+  try {
+    const orders = await prisma.order.findMany({
+      include: { user: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (!orders) {
+      return {
+        success: false,
+        message: "Orders not found",
+      };
+    }
+
+    return {
+      success: true,
+      data: orders,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Internal Server Error",
+    };
+  }
+};
+
+export const getProducts = async ({
+  category,
+  searchTerm,
+}: {
+  category?: string | null;
+  searchTerm?: string | null;
+}) => {
+  try {
+    let searchString = searchTerm;
+    if (!searchTerm) searchString = "";
+
+    let query: any = {};
+    if (category) {
+      query.category = category;
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        ...query,
+        OR: [
+          {
+            name: {
+              contains: searchString,
+              mode: "insensitive",
+            },
+            description: {
+              contains: searchString,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      include: {
+        reviews: {
+          include: { user: true },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    if (!products) {
+      return { success: false, message: "Products not found" };
+    }
+
+    return {
+      success: true,
+      data: products,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Internal Server Error",
+    };
+  }
+};
+
+export const adminCreateProduct = async ({
+  user,
+  product,
+}: {
+  user: User;
+  product: Product;
+}) => {
+  if (!user || user.role !== "ADMIN") {
+    return {
+      success: false,
+      message: "Not Authorized",
+    };
+  }
+
+  try {
+    const newProduct = await prisma.product.create({
+      data: { ...product },
+    });
+
+    return {
+      success: true,
+      data: newProduct,
+    };
+  } catch (error) {
+    console.log(`Error creating product - ${error}`);
+    return {
+      success: false,
+      message: "Error Creating Product",
+    };
+  }
+};
 
 export const createPaymentIntent = async ({
   cartProducts,

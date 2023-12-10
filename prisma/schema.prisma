@@ -40,6 +40,7 @@ model User {
   role           Role      @default(USER)
   accounts       Account[]
   orders         Order[]
+  reviews        Review[]
 }
 
 model Order {
@@ -57,6 +58,30 @@ model Order {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  price       Float
+  brand       String
+  category    String
+  inStock     Boolean
+  image       Image[]
+  reviews     Review[]
+}
+
+model Review {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  productId String   @db.ObjectId
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 type CartProduct {
   id          String
   name        String
@@ -66,6 +91,12 @@ type CartProduct {
   selectedImg SelectedImg
   quantity    Int
   price       Float
+}
+
+type Image {
+  color     String
+  colorCode String
+  image     String
 }
 
 type SelectedImg {

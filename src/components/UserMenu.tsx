@@ -7,10 +7,12 @@ import MenuItem from "./MenuItem";
 import { signOut } from "next-auth/react";
 import BackDrop from "./BackDrop";
 import { useSession } from "next-auth/react";
+import { User } from "@prisma/client";
 
 const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
+  const user = (session?.user as User) ?? null;
 
   return (
     <>
@@ -35,11 +37,14 @@ const UserMenu = () => {
                     </MenuItem>
                   </Link>
 
-                  <Link href="/admin">
-                    <MenuItem onClick={() => setOpen(!open)}>
-                      Admin Dashboard
-                    </MenuItem>
-                  </Link>
+                  {user && user.role === "ADMIN" && (
+                    <Link href="/admin">
+                      <MenuItem onClick={() => setOpen(!open)}>
+                        Admin Dashboard
+                      </MenuItem>
+                    </Link>
+                  )}
+
                   <hr />
                   <MenuItem
                     onClick={() => {

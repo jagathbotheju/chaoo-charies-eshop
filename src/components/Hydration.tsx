@@ -1,4 +1,5 @@
 "use client";
+import { useCart } from "@/hooks/useCart";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -9,6 +10,7 @@ const Hydration = ({ children }: Props) => {
   const [hydrate, setHydrate] = useState(false);
 
   useEffect(() => {
+    //useCart.persist.rehydrate();
     setHydrate(true);
   }, []);
 

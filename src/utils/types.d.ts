@@ -23,3 +23,15 @@ interface SAddress extends Stripe.Address {
   postalCode: string;
   state: string;
 }
+
+type ImageType = {
+  color: string;
+  colorCode: string;
+  image: File | null;
+};
+
+type UploadedImageType = {
+  color: string;
+  code: string;
+  image: string;
+};
