@@ -100,7 +100,7 @@ const CartClient = () => {
           {/* sub total */}
           <div className="flex justify-between w-full text-base font-semibold">
             <span>SubTotal</span>
-            <span>{formatPrice(cartTotalAmount)}</span>
+            <span>{formatPrice(cartTotalAmount / 100)}</span>
           </div>
           <p className="text-slate-500">
             Taxes and shipping calculate at checkout

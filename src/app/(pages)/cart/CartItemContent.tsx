@@ -14,6 +14,8 @@ const CartItemContent = ({ item }: Props) => {
   const { removeProductFromCart, handleQtyIncrease, handleQtyDecrease } =
     useCart();
 
+  console.log("CartItemContent", item.price);
+
   return (
     <div className="grid grid-cols-5 text-xs md:text-sm gap-4 border-t-[1.5px] py-4 items-center border-slate-200">
       {/* product details */}
@@ -41,7 +43,7 @@ const CartItemContent = ({ item }: Props) => {
       </div>
 
       {/* price */}
-      <div className="justify-self-center">{formatPrice(item.price)}</div>
+      <div className="justify-self-center">{formatPrice(item.price / 100)}</div>
 
       {/* quantity */}
       <div className="justify-self-center">
@@ -55,7 +57,7 @@ const CartItemContent = ({ item }: Props) => {
 
       {/* total price */}
       <div className="justify-self-end font-semibold">
-        {formatPrice(item.price * item.quantity)}
+        {formatPrice((item.price / 100) * item.quantity)}
       </div>
     </div>
   );

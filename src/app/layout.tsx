@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,6 +9,7 @@ import { getServerSession } from "next-auth";
 import SessionProvider from "../components/SessionProvider";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "E-Shop",
@@ -25,7 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} min-h-screen flex flex-col text-slate-700`}
+        className={`${inter.className} ${poppins.className} min-h-screen flex flex-col text-slate-700`}
       >
         <Hydration>
           <SessionProvider session={session}>

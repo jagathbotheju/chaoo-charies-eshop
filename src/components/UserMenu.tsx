@@ -31,9 +31,9 @@ const UserMenu = () => {
             {session && session.user ? (
               <>
                 <div>
-                  <Link href="/orders">
+                  <Link href="/order">
                     <MenuItem onClick={() => setOpen(!open)}>
-                      Your Orders
+                      My Orders
                     </MenuItem>
                   </Link>
 

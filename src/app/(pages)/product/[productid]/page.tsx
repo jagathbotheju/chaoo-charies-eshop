@@ -1,7 +1,11 @@
 import Container from "@/components/Container";
 import ListRating from "@/components/ListRating";
-import ProductDetails from "@/app/(pages)/product/ProductDetails";
+import ProductDetails, {
+  ExtProduct,
+} from "@/app/(pages)/product/ProductDetails";
 import { products } from "@/utils/products";
+import { getProduct } from "@/utils/serverActions";
+import { Product } from "@prisma/client";
 //import { product } from "@/utils/product";
 
 interface Props {
@@ -10,8 +14,9 @@ interface Props {
   };
 }
 
-const ProductDetailsPage = ({ params }: Props) => {
-  const product = products.find((product) => product.id === params.productid);
+const ProductDetailsPage = async ({ params }: Props) => {
+  const res = await getProduct(params.productid);
+  const product = res.data as ExtProduct;
 
   return (
     <div className="p-8">

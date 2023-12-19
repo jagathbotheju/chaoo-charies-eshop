@@ -1,11 +1,17 @@
 import Container from "@/components/Container";
 import HomeBanner from "@/components/HomeBanner";
-import { products } from "@/utils/products";
+//import { products } from "@/utils/products";
 import { truncateText } from "@/utils/truncateText";
 import Image from "next/image";
 import ProductCard from "./(pages)/product/ProductCard";
+import { getProducts } from "@/utils/serverActions";
+import { Product } from "@prisma/client";
+import { ExtProduct } from "./(pages)/product/ProductDetails";
 
-export default function Home() {
+export default async function Home() {
+  const res = await getProducts({});
+  const products = res.data as ExtProduct[];
+
   return (
     <div className="p-8">
       <Container>

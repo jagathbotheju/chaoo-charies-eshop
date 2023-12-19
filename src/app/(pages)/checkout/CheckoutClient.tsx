@@ -26,6 +26,8 @@ const CheckoutClient = () => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const initialized = useRef(false);
 
+  console.log("cart products", cartProducts);
+
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
@@ -33,10 +35,14 @@ const CheckoutClient = () => {
         setLoading(true);
         setError(false);
         console.log("STARTING CHECKOUT");
+        const stripeCartProducts = cartProducts.map((product) => ({
+          ...product,
+          price: product.quantity * (product.price / 100),
+        }));
 
         startTransition(() => {
           createPaymentIntent({
-            cartProducts: cartProducts,
+            cartProducts: stripeCartProducts,
             user: session?.user as User,
             paymentIntentId: paymentIntent,
           })
@@ -102,7 +108,7 @@ const CheckoutClient = () => {
 
           <Button
             label="View Your Orders"
-            onClick={() => router.push("/orders")}
+            onClick={() => router.push("/order")}
           />
         </div>
       )}

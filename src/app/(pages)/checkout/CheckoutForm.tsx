@@ -76,7 +76,7 @@ const CheckoutForm = ({ clientSecret, setPaymentSuccess }: Props) => {
 
       {/* total amount */}
       <div className="py-4 text-center text-slate-700 text-xl font-bold">
-        Total : {formatPrice(cartTotalAmount)}
+        Total : {formatPrice(cartTotalAmount / 100)}
       </div>
 
       <Button

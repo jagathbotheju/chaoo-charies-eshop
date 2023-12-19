@@ -1,10 +1,11 @@
 "use client";
 
+import { Product } from "@prisma/client";
 import Image from "next/image";
 
 interface Props {
   cartProduct: CartProduct;
-  product: any;
+  product: Product;
   handleColorSelect: (value: SelectedImg) => void;
 }
 
@@ -13,7 +14,7 @@ const ProductImage = ({ cartProduct, product, handleColorSelect }: Props) => {
     <div className="grid grid-cols-6 h-full max-h-[500px] min-h-[300px] sm:min-h-[400px]">
       {/* thumb nails */}
       <div className="flex flex-col items-center justify-center gap-4 cursor-pointer border h-full max-h-[500px] min-h-[300px] sm:min-h-[400px]">
-        {product.images.map((image: SelectedImg) => {
+        {product.image.map((image: SelectedImg) => {
           return (
             <div
               key={image.color}

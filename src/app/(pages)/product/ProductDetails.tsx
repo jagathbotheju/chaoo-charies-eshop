@@ -9,10 +9,16 @@ import { useCart } from "@/hooks/useCart";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { MdCheckCircle } from "react-icons/md";
+import { Product, Review } from "@prisma/client";
+import { formatPrice } from "@/utils/formatPrice";
 
 interface Props {
-  product: any;
+  product: ExtProduct;
 }
+
+export type ExtProduct = Product & {
+  reviews: Review[];
+};
 
 const ProductDetails = ({ product }: Props) => {
   const router = useRouter();
@@ -24,13 +30,13 @@ const ProductDetails = ({ product }: Props) => {
     description: product.description,
     category: product.category,
     brand: product.brand,
-    selectedImg: { ...product.images[0] },
+    selectedImg: { ...product.image[0] },
     quantity: 1,
     price: product.price,
   });
   const productRating =
-    product.reviews.reduce((acc: number, item: any) => acc + item.rating, 0) /
-    product.reviews.length;
+    product?.reviews?.reduce((acc: number, item: any) => acc + item.rating, 0) /
+      product?.reviews?.length ?? 0;
 
   useEffect(() => {
     const exist = cartProducts.find((product) => product.id === cartProduct.id);
@@ -85,10 +91,12 @@ const ProductDetails = ({ product }: Props) => {
       {/* details */}
       <div className="flex flex-col gap-1 text-slate-500 text-sm">
         <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
-        <div className="flex items-center gap-2">
-          <Rating value={productRating} readOnly />
-          <p>{product.reviews.length} reviews</p>
-        </div>
+        {product && product.reviews && (
+          <div className="flex items-center gap-2">
+            <Rating value={productRating} readOnly />
+            <p>{product.reviews.length} reviews</p>
+          </div>
+        )}
         <hr className="w-[30%] my-2" />
 
         <p className="text-justify">{product.description}</p>
@@ -126,7 +134,7 @@ const ProductDetails = ({ product }: Props) => {
           <>
             <SetColor
               cartProduct={cartProduct}
-              images={product.images}
+              images={product.image}
               handleColorSelect={handleColorSelect}
             />
             <hr className="w-[30%] my-2" />
@@ -136,6 +144,11 @@ const ProductDetails = ({ product }: Props) => {
               handleQtyDecrease={handleQtyDecrease}
               handleQtyIncrease={handleQtyIncrease}
             />
+            <hr className="w-[30%] my-2" />
+
+            <p className="font-bold text-2xl">
+              {formatPrice(product.price / 100)}
+            </p>
             <hr className="w-[30%] my-2" />
 
             <Button

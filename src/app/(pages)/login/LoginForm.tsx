@@ -102,7 +102,7 @@ const LoginForm = () => {
       <Button
         outline
         label="Continue with Google"
-        onClick={() => signIn("google")}
+        onClick={() => signIn("google", { callbackUrl: "/" })}
         icon={AiOutlineGoogle}
         width="w-full"
       />

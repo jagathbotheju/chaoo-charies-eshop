@@ -5,17 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { updateStock } from "@/utils/serverActions";
 import { useState } from "react";
-import DataTableInStock from "./DataTableInStock";
 import Link from "next/link";
-import { formatPrice } from "@/utils/formatPrice";
+import OrderDeliveryStatus from "./OrderDeliveryStatus";
 
 export type ColumnType = {
   id: string;
-  name: string;
-  price: number;
-  category: string;
-  brand: string;
-  inStock: boolean;
+  customer: string;
+  amount: string;
+  paymentStatus: string;
+  date: string;
+  deliveryStatus: string;
 };
 
 export const columns: ColumnDef<ColumnType>[] = [
@@ -27,7 +26,7 @@ export const columns: ColumnDef<ColumnType>[] = [
       return (
         <Link
           className="text-blue-700 hover:underline"
-          href={`/product/${data.id}`}
+          href={`/order/${data.id}`}
         >
           {data.id}
         </Link>
@@ -35,60 +34,72 @@ export const columns: ColumnDef<ColumnType>[] = [
     },
   },
   {
-    accessorKey: "name",
+    accessorKey: "customer",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className="-ml-4"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          Customer
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "price",
+    accessorKey: "amount",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className="-ml-4"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Amount
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "paymentStatus",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="-ml-4"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Payment Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
       const data = row.original;
-      return <p>{formatPrice(data.price / 100)}</p>;
-    },
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        <Badge
+          className={
+            data.paymentStatus === "pending" ? "bg-slate-500" : "bg-green-500"
+          }
         >
-          Category
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+          {data.paymentStatus === "pending" ? "Pending" : "Complete"}
+        </Badge>
       );
     },
   },
   {
-    accessorKey: "brand",
+    accessorKey: "date",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className="-ml-4"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Brand
+          Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -96,22 +107,22 @@ export const columns: ColumnDef<ColumnType>[] = [
   },
 
   {
-    accessorKey: "inStock",
+    accessorKey: "deliveryStatus",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className="-ml-4"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          In Stock
+          Delivery Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => {
       const data = row.original;
-      //console.log(data);
-      return <DataTableInStock data={data} />;
+      return <OrderDeliveryStatus data={data} />;
     },
   },
 ];

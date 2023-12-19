@@ -2,6 +2,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import { Product } from "@prisma/client";
 import { DataTable } from "./DataTable";
 import { columns } from "./Columns";
+import Heading from "@/components/Heading";
 
 interface Props {
   products: Product[];
@@ -21,6 +22,9 @@ const ManageProductClient = ({ products }: Props) => {
 
   return (
     <div>
+      <div className="mb-4 mt-8">
+        <Heading title="Manage Products" center />
+      </div>
       <DataTable columns={columns} data={data} />
     </div>
   );
