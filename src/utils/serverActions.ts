@@ -244,12 +244,22 @@ export const getProducts = async ({
   }
 };
 
-// 4-GET PRODUCT
+// 4-GET PRODUCT BY ID
 export const getProduct = async (productId: string) => {
   try {
     const product = await prisma.product.findUnique({
       where: {
         id: productId,
+      },
+      include: {
+        reviews: {
+          include: {
+            user: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 

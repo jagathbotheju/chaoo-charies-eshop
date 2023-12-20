@@ -8,6 +8,7 @@ import { useCart } from "@/hooks/useCart";
 import { useEffect } from "react";
 import UserMenu from "./UserMenu";
 import { cartTotalAmount } from "@/utils/cartTotalAmount";
+import CategoryNav from "./CategoryNav";
 
 const redressed = Redressed({ subsets: ["latin"], weight: ["400"] });
 
@@ -46,6 +47,9 @@ const Navbar = () => {
           </div>
         </Container>
       </div>
+
+      {/* category nav */}
+      <CategoryNav />
     </div>
   );
 };
