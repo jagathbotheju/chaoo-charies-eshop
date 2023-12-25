@@ -1,10 +1,9 @@
-import Stripe from "stripe";
-import { NextApiRequest, NextApiResponse } from "next";
-import { buffer } from "micro";
+export const dynamic = "auto";
+export const revalidate = 0;
 import prisma from "@/utils/prismadb";
-import { Address } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import Stripe from "stripe";
 
 export const config = {
   api: { bodyParser: false },
