@@ -3,9 +3,19 @@ import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-// export const config = {
-//   api: { bodyParser: false },
-// };
+export const dynamic = "auto";
+export const dynamicParams = true;
+export const revalidate = false;
+export const fetchCache = "auto";
+export const runtime = "nodejs";
+export const preferredRegion = "auto";
+export const maxDuration = 5;
+export const config = {
+  api: {
+    bodyParser: false,
+    externalResolver: true,
+  },
+};
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
