@@ -36,13 +36,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     });
   }
 
-  console.log("WEBHOOK******", event.type);
   switch (event.type) {
     case "charge.succeeded":
       const charge: any = event.data.object as Stripe.Charge;
 
       if (typeof charge.payment_intent === "string") {
-        console.log("WEBHOOK UPDATING DB...");
         await prisma.order.update({
           where: { paymentIntentId: charge.payment_intent },
           data: {

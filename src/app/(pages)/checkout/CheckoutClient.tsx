@@ -26,15 +26,12 @@ const CheckoutClient = () => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const initialized = useRef(false);
 
-  console.log("cart products", cartProducts);
-
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true;
       if (cartProducts && session && session.user) {
         setLoading(true);
         setError(false);
-        console.log("STARTING CHECKOUT");
         const stripeCartProducts = cartProducts.map((product) => ({
           ...product,
           price: product.quantity * (product.price / 100),
@@ -51,12 +48,10 @@ const CheckoutClient = () => {
                 const intent = JSON.parse(response.data);
                 setClientSecret(intent.client_secret);
                 setPaymentIntent(intent.id);
-                console.log("STARTING SUCCESS");
               }
             })
             .catch((error) => {
               setError(true);
-              console.log(error);
               toast.error("Something went wrong!");
             })
             .finally(() => {

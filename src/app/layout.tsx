@@ -7,6 +7,7 @@ import Providers from "@/components/Providers";
 import Hydration from "@/components/Hydration";
 import { getServerSession } from "next-auth";
 import SessionProvider from "../components/SessionProvider";
+import "@smastrom/react-rating/style.css";
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
 const inter = Inter({ subsets: ["latin"] });

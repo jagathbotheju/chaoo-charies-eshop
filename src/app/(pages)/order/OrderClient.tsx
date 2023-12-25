@@ -10,7 +10,6 @@ interface Props {
 }
 
 const OrderClient = ({ orders }: Props) => {
-  console.log(orders);
   const data = orders.map((order) => {
     return {
       id: order.id,

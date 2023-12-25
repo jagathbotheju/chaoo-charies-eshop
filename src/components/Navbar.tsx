@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import UserMenu from "./UserMenu";
 import { cartTotalAmount } from "@/utils/cartTotalAmount";
 import CategoryNav from "./CategoryNav";
+import SearchBar from "./SearchBar";
 
 const redressed = Redressed({ subsets: ["latin"], weight: ["400"] });
 
@@ -21,7 +22,7 @@ const Navbar = () => {
   // }, []);
 
   return (
-    <div className="sticky top-0 w-full bg-slate-200 z-30 shadow-sm">
+    <div className="sticky top-0 w-full bg-slate-300 z-30 shadow-sm">
       <div className="py-4 border-b-[1px]">
         <Container>
           <div className="flex items-center justify-between gap-3 md:gap-0">
@@ -31,7 +32,9 @@ const Navbar = () => {
             >
               E-Shop
             </Link>
-            <div className="hidden md:block">Search</div>
+            <div className="hidden md:block">
+              <SearchBar />
+            </div>
             <div className="flex items-center gap-5 md:gap-8">
               <div
                 className="relative cursor-pointer"

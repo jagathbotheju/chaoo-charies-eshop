@@ -48,10 +48,28 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async session({ session, token, user }) {
-      session.user = token as User;
-      return session;
+      //session.user = token;
+      //return { ...session, ...token };
+      return {
+        ...session,
+        user: { ...token },
+      };
     },
-    async jwt({ token, user }) {
+    async jwt({ token, account, profile }) {
+      let user = null;
+      if (token.email) {
+        const dbuser = await prisma.user.findUnique({
+          where: {
+            email: token.email,
+          },
+          include: {
+            orders: true,
+            reviews: true,
+          },
+        });
+        if (dbuser) user = dbuser;
+      }
+      token.company = "abc company";
       return { ...token, ...user };
     },
   },

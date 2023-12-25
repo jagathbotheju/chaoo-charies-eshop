@@ -35,7 +35,6 @@ const RegisterForm = () => {
       signupUser(formData)
         .then((response) => {
           if (response.success) {
-            console.log("user from serverActions", response.data);
             toast.success("User create successfully");
             signIn("credentials", {
               email: formData.email,
@@ -56,7 +55,6 @@ const RegisterForm = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
           toast.error(error);
         })
         .finally(() => {

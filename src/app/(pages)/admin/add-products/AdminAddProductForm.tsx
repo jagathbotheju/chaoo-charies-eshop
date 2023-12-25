@@ -95,7 +95,6 @@ const AdminAddProductForm = () => {
   }, []);
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
     //upload image to db
     setLoading(true);
     let uploadedImages: Image[] = [];
@@ -125,7 +124,6 @@ const AdminAddProductForm = () => {
                 (snapshot) => {
                   const progress =
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  console.log("Upload is " + progress + "% done");
                   setImageUploadProgress(progress);
                   switch (snapshot.state) {
                     case "paused":
@@ -138,7 +136,6 @@ const AdminAddProductForm = () => {
                 },
                 (error) => {
                   setLoading(false);
-                  console.log("Error uploading image", error);
                   reject(error);
                 },
                 () => {
@@ -148,11 +145,9 @@ const AdminAddProductForm = () => {
                         ...item,
                         image: downloadURL,
                       });
-                      console.log("File available at", downloadURL);
                       resolve();
                     })
                     .catch((error) => {
-                      console.log("error getting downloadURL");
                       reject(error);
                       setLoading(false);
                     });
@@ -163,7 +158,6 @@ const AdminAddProductForm = () => {
         }
       } catch (error) {
         setLoading(false);
-        console.log("Error handling image upload", error);
         return toast.error("Error handling image upload");
       }
     };
@@ -179,10 +173,8 @@ const AdminAddProductForm = () => {
       inStock: data.inStock,
       image: uploadedImages,
     } as Product;
-    console.log("productData", productData);
 
     //save to db
-    console.log("uploadImages", uploadedImages);
     adminCreateProduct({ user, product: productData })
       .then((response) => {
         if (response?.success) {

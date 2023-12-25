@@ -23,12 +23,7 @@ const CartClient = () => {
     cartTotalQty,
   } = useCart((state) => state);
 
-  // useEffect(() => {
-  //   useCart.persist.rehydrate();
-  // }, []);
-
   useEffect(() => {
-    console.log("updating cart client");
     if (cartProducts) {
       const { total, qty } = cartProducts.reduce(
         (acc, item) => {

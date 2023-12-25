@@ -4,7 +4,6 @@ interface Props {
 }
 
 const FormWrap = ({ children, width = "sm" }: Props) => {
-  console.log("width", width);
   return (
     <div className="min-h-fit h-full flex items-center justify-center pb-12 pt-20">
       <div

@@ -35,3 +35,7 @@ type UploadedImageType = {
   code: string;
   image: string;
 };
+
+type ExtraProduct = Product & {
+  reviews: Review[];
+};

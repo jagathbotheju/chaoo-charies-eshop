@@ -14,8 +14,6 @@ const CartItemContent = ({ item }: Props) => {
   const { removeProductFromCart, handleQtyIncrease, handleQtyDecrease } =
     useCart();
 
-  console.log("CartItemContent", item.price);
-
   return (
     <div className="grid grid-cols-5 text-xs md:text-sm gap-4 border-t-[1.5px] py-4 items-center border-slate-200">
       {/* product details */}

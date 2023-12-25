@@ -1,5 +1,5 @@
 "use server";
-import { User, Product, Order } from "@prisma/client";
+import { User, Product, Order, Review } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { FieldValues } from "react-hook-form";
 import prisma from "./prismadb";
@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { deleteObject, getStorage, ref } from "firebase/storage";
 import firebaseApp from "./firebase";
 import { serverUser } from "./serverUser";
+import moment from "moment";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
@@ -20,12 +21,15 @@ const storage = getStorage(firebaseApp);
 // 2.1-UPDATE ORDER DELIVERY STATUS
 // 2.2-GET ORDER BY ID
 // 2.3-GET ORDER BY USERID
+// 2.3-GET ORDERS
 // 3-GET PRODUCTS
 // 4-GET PRODUCT BY ID
 // 5-DELETE A PRODUCT
 // 6-ADMIN CREATE PRODUCT
 // 7-CREATE PAYMENT INTENT
 // 8-SIGN UP USER
+// 9-REVIEW CREATE
+// 10-USERS GET
 
 // 1-UPDATE STOCK
 export const updateStock = async (productId: string, inStock: boolean) => {
@@ -236,7 +240,6 @@ export const getProducts = async ({
       data: products,
     };
   } catch (error) {
-    console.log(error);
     return {
       success: false,
       message: "Internal Server Error",
@@ -275,7 +278,6 @@ export const getProduct = async (productId: string) => {
       data: product,
     };
   } catch (error) {
-    console.log(`Error getting product - ${error}`);
     return {
       success: false,
       message: "Error getting a product",
@@ -309,7 +311,6 @@ export const deleteProduct = async ({
         if (item) {
           const imageRef = ref(storage, item.image);
           await deleteObject(imageRef);
-          console.log("image deleted", item.image);
         }
       }
     }
@@ -331,7 +332,6 @@ export const deleteProduct = async ({
       message: "Product deleted successfully",
     };
   } catch (error) {
-    console.log(`Error deleting product - ${error}`);
     return {
       success: false,
       message: "Error Creating Product",
@@ -364,7 +364,6 @@ export const adminCreateProduct = async ({
       data: newProduct,
     };
   } catch (error) {
-    console.log(`Error creating product - ${error}`);
     return {
       success: false,
       message: "Error Creating Product",
@@ -382,7 +381,6 @@ export const createPaymentIntent = async ({
   user: User;
   paymentIntentId: string | null;
 }) => {
-  console.log("CREATING PAYMENT INTENT***********", paymentIntentId);
   const totalPrice = cartTotalAmount(cartProducts).totalPrice * 100;
   const orderData = {
     user: { connect: { id: user.id } },
@@ -396,7 +394,6 @@ export const createPaymentIntent = async ({
 
   if (paymentIntentId) {
     //update payment intent
-    console.log("CHECKOUT FOUND PAYMENT INTENT - UPDATE", paymentIntentId);
     const currentPaymentIntent = await stripe.paymentIntents.retrieve(
       paymentIntentId
     );
@@ -429,11 +426,6 @@ export const createPaymentIntent = async ({
         };
       }
 
-      console.log("UPDATE ORDER******************************************", {
-        amount: totalPrice,
-        products: cartProducts,
-      });
-
       return {
         success: true,
         data: JSON.stringify(updatedPaymentIntent),
@@ -441,8 +433,6 @@ export const createPaymentIntent = async ({
     }
   } else {
     //create the payment intent and
-    console.log("CHECKOUT FOUND PAYMENT INTENT - CREATE");
-
     const paymentIntent = await stripe.paymentIntents.create({
       amount: totalPrice,
       currency: "usd",
@@ -456,11 +446,6 @@ export const createPaymentIntent = async ({
         ...orderData,
         paymentIntentId,
       },
-    });
-
-    console.log("CREATE ORDER******************************************", {
-      ...orderData,
-      paymentIntentId,
     });
 
     return {
@@ -495,10 +480,160 @@ export const signupUser = async (formData: FieldValues) => {
       data: user,
     };
   } catch (error) {
-    console.log(error);
     return {
       success: false,
       message: "Internal Server Error",
+    };
+  }
+};
+
+// 9-REVIEW CREATE
+export const createReview = async ({
+  comment,
+  rating,
+  product,
+}: {
+  comment: string;
+  rating: number;
+  product: ExtraProduct;
+}) => {
+  try {
+    const currentUser = await serverUser();
+    const myOrders = await prisma.order.findMany({
+      where: {
+        userId: currentUser.id,
+      },
+    });
+    const orderDelivered = myOrders.some(
+      (order) =>
+        order.products.find((item) => item.id === product.id) &&
+        order.deliveryStatus === "delivered"
+    );
+    const userReview = product.reviews.find(
+      (review: Review) => review.userId === currentUser.id
+    );
+
+    if (!orderDelivered) {
+      return {
+        success: false,
+        message: "You must purchase to comment",
+      };
+    }
+
+    const review = await prisma.review.create({
+      data: {
+        comment,
+        rating,
+        productId: product.id,
+        userId: currentUser.id,
+      },
+    });
+
+    if (!review) {
+      return {
+        success: false,
+        message: "Error reviewing this product",
+      };
+    }
+
+    revalidatePath(`/product/${product.id}`);
+
+    return {
+      success: true,
+      message: "Successfully comment this product",
+      data: review,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Create Review - Internal Server Error",
+    };
+  }
+};
+
+// 10-USERS GET
+export const getUsers = async () => {
+  try {
+    const users = await prisma.user.findMany();
+    if (!users) {
+      return {
+        success: false,
+        message: "Error getting users",
+      };
+    }
+
+    return {
+      success: true,
+      data: users,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Getting All Users/Internal Server Error",
+    };
+  }
+};
+
+// 11-CHART DATA
+export const getChartData = async () => {
+  try {
+    const startDate = moment().subtract(30, "days").startOf("day");
+    const endDate = moment().endOf("day");
+
+    const result = await prisma.order.groupBy({
+      by: ["createdAt"],
+      where: {
+        createdAt: {
+          gte: startDate.toISOString(),
+          lte: endDate.toISOString(),
+        },
+        status: "complete",
+      },
+      _sum: {
+        amount: true,
+      },
+    });
+
+    const aggregatedData: {
+      [day: string]: { day: string; date: string; totalAmount: number };
+    } = {};
+
+    const currentDate = startDate.clone();
+    while (currentDate <= endDate) {
+      const day = currentDate.format("dddd");
+      aggregatedData[day] = {
+        day,
+        date: currentDate.format("YYYY-MM-DD"),
+        totalAmount: 0,
+      };
+      currentDate.add(1, "day");
+    }
+
+    result.forEach((entry) => {
+      const day = moment(entry.createdAt).format("dddd");
+      const amount = entry._sum.amount || 0;
+      aggregatedData[day].totalAmount += amount / 100;
+    });
+
+    const formattedData = Object.values(aggregatedData).sort((a, b) =>
+      moment(a.date).diff(moment(b.date))
+    );
+
+    if (!result) {
+      return {
+        success: false,
+        message: "Error getting chart data",
+      };
+    }
+
+    return {
+      success: true,
+      data: formattedData,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Getting chart data/Internal Server Error",
     };
   }
 };

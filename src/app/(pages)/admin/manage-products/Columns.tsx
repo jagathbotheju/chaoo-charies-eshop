@@ -110,7 +110,6 @@ export const columns: ColumnDef<ColumnType>[] = [
     },
     cell: ({ row }) => {
       const data = row.original;
-      //console.log(data);
       return <DataTableInStock data={data} />;
     },
   },

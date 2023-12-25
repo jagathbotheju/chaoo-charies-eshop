@@ -5,7 +5,10 @@ import ProductDetails, {
 } from "@/app/(pages)/product/ProductDetails";
 import { products } from "@/utils/products";
 import { getProduct } from "@/utils/serverActions";
-import { Product } from "@prisma/client";
+import { Product, User } from "@prisma/client";
+import AddRating from "@/components/AddRating";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 //import { product } from "@/utils/product";
 
 interface Props {
@@ -25,7 +28,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
 
         {/* ratings */}
         <div className="flex flex-col mt-20 gap-4">
-          <div>Add Ratings</div>
+          <AddRating product={product} />
           <ListRating product={product} />
         </div>
       </Container>

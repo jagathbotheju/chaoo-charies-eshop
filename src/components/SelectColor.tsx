@@ -38,7 +38,6 @@ const SelectColor = ({
   const handleCheck = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSelected(e.target.checked);
     if (!e.target.checked) {
-      console.log("uncheck and remove");
       setFile(null);
       removeImageFromLocalState(item);
     }

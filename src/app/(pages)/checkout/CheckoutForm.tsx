@@ -33,7 +33,6 @@ const CheckoutForm = ({ clientSecret, setPaymentSuccess }: Props) => {
   }, [stripe, clientSecret, setPaymentSuccess]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("submit order");
     e.preventDefault();
     if (!stripe || !elements) return;
     setLoading(true);

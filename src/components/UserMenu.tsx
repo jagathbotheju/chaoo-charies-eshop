@@ -7,12 +7,17 @@ import MenuItem from "./MenuItem";
 import { signOut } from "next-auth/react";
 import BackDrop from "./BackDrop";
 import { useSession } from "next-auth/react";
-import { User } from "@prisma/client";
+import { Order, Review, User } from "@prisma/client";
+
+type ExtraUser = User & {
+  orders: Order[];
+  reviews: Review[];
+};
 
 const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
-  const user = (session?.user as User) ?? null;
+  const user = (session?.user as ExtraUser) ?? null;
 
   return (
     <>
