@@ -1,9 +1,9 @@
+export const revalidate = 0;
 import Container from "@/components/Container";
 import HomeBanner from "@/components/HomeBanner";
 import { getProducts } from "@/utils/serverActions";
 import ProductCard from "./(pages)/product/ProductCard";
 import { ExtProduct } from "./(pages)/product/ProductDetails";
-//export const revalidate=0
 
 interface Props {
   searchParams: {

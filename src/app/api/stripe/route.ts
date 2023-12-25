@@ -1,5 +1,3 @@
-export const dynamic = "auto";
-export const revalidate = 0;
 import prisma from "@/utils/prismadb";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
